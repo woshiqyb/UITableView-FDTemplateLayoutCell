@@ -97,6 +97,9 @@
     return fittingHeight;
 }
 
+//根据cell的identifier创建模版cell，每一种identifer的cell只会创建一次，创建之后缓存起来，下一次直接使用
+//由于模版cell是直接通过dequeueReusableCellWithIdentifier方法获取的，
+//所以使用FD的时候必须先确保对应的identifier已经注册好
 - (__kindof UITableViewCell *)fd_templateCellForReuseIdentifier:(NSString *)identifier {
     NSAssert(identifier.length > 0, @"Expect a valid identifier - %@", identifier);
     
@@ -128,6 +131,8 @@
     UITableViewCell *templateLayoutCell = [self fd_templateCellForReuseIdentifier:identifier];
     
     // Manually calls to ensure consistent behavior with actual cells. (that are displayed on screen)
+    //因为模版cell不会显示在屏幕上，系统不会自动调用prepareForReuse方法，故此出手动调用
+    //以确保与显示在屏幕上的cell具有一直的行为
     [templateLayoutCell prepareForReuse];
     
     // Customize and provide content for our template cell.
